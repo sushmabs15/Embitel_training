@@ -1,61 +1,40 @@
 #include<stdio.h>
-#include<fcntl.h>
 #include<pthread.h>
-#include<semaphore.h>
-
-#define MAX_MSG_LEN 256
-
-sem_t sem1;
-char message1[MAX_MSG_LEN];
-char message2[MAX_MSG_LEN];
-sem_t sem2;
-
-void *thrdfun1(void *arg);
-void togglecase(char *buf);
-
+int cnt;
+int num = 5;
+pthread_t th;
+pthread_t th2;
+void *myfunc();
+void *myfunc2();
+pthread_mutex_t mlock;
 int main()
 {
- pthread_t thrd1;
- char msg1[]="Thread1";
- int res,num;
-
- res=sem_init(&sem1,0,0);
- res=sem_init(&sem2,0,0);
- res=pthread_create(&thrd1,NULL,thrdfun1,msg1);
- while(1)
- {
-  printf("Enter message to convert case\n");
-  fgets(message1,MAX_MSG_LEN,stdin);
-  sem_post(&sem1);
- 
-  sem_wait(&sem2);
-  printf("Resp message:%s",message2);
- }
+  char ch;
+  int exitstat;
+  void *retptr;
+  pthread_create(&th,NULL,myfunc, NULL);
+  pthread_create(&th2,NULL,myfunc2, NULL);
+  pthread_join(th,&retptr);
+  pthread_join(th2,&retptr);
 }
 
-void *thrdfun1(void *arg)
+void *myfunc()
 {
-  char *buf=(char*)arg;
-  printf("I am in %s\n",buf);
-  while(1)
-  {
-    sem_wait(&sem1);
-    togglecase(message1);
-    sem_post(&sem2);
+  pthread_mutex_lock(&mlock);
+  int fact = 1,i;
+  for(i = 1; i <= num; i++){
+    fact = fact * i;
   }
+  printf("factorial: %d\n",fact);
+  pthread_mutex_unlock(&mlock);
 }
 
-void togglecase(char *buf)
+void *myfunc2()
 {
-  char *temp=buf;
-  while(*buf!='\n')
-  {
-    if((*buf >= 65) &&(*buf <= 91))
-     *buf=*buf+32;
-    else
-    if((*buf >= 97) &&(*buf <= 122))
-      *buf=*buf-32;
-    buf++;
+  pthread_mutex_lock(&mlock); int sum = 0;
+  for(int i = 0; i <= num; i++){
+    sum = sum + i;
   }
-  strcpy(message2,temp);
+  printf("sum of numbers: %d\n", sum);
+  pthread_mutex_unlock(&mlock);
 }
