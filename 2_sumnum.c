@@ -1,3 +1,5 @@
+/*2. Write a program for sum of the numbers*/
+
 #include<stdio.h>
 int main(){
 	int num, rem, sum = 0;
