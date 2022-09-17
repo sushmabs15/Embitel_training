@@ -1,3 +1,5 @@
+/*7. Program to clear the bit */
+
 #include<stdio.h>
 int main(){
 	unsigned int num, ret;
