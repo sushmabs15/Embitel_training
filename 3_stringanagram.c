@@ -1,3 +1,5 @@
+/*3. write program two strings anagram or not*/
+
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
