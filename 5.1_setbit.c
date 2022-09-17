@@ -1,3 +1,5 @@
+/*6. Program to set the bit */
+
 #include<stdio.h>
 int main(){
 	unsigned int num, ret;
